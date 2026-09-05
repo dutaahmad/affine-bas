@@ -1,0 +1,12 @@
+{
+  tailscale {
+    affine {
+      hostname affine
+    }
+  }
+}
+
+https://{$TS_FQDN} {
+  bind tailscale/affine
+  reverse_proxy affine-upstream:3010
+}
