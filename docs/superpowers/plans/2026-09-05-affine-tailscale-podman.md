@@ -90,15 +90,15 @@ If the selected provider does not honor `depends_on` conditions, stop and use a 
 
 ## HUMAN GATE 4: Tailscale Node Approval
 
-- [ ] Human confirms the new `affine` node appears in the expected tailnet.
-- [ ] Human confirms its hostname, tags, and ACL permissions.
-- [ ] Human stops the deployment if Tailscale registered a suffixed or unexpected hostname.
+- [x] Human confirms the new `affine` node appears in the expected tailnet.
+- [x] Human confirms its hostname, tags, and ACL permissions.
+- [x] Human stops the deployment if Tailscale registered a suffixed or unexpected hostname. (Not needed; exact hostname `affine` registered.)
 
 ## Task 5: HTTPS and Application Validation
 
-- [ ] Validate Caddy with `podman exec affine_bas_caddy caddy validate --config /etc/caddy/Caddyfile`.
-- [ ] From a tailnet-connected device, open `https://<TS_FQDN>`.
-- [ ] Verify the certificate is valid and no port suffix is required.
+- [x] Validate Caddy with `podman exec affine_bas_caddy caddy validate --config /etc/caddy/Caddyfile`. ("Valid configuration".)
+- [x] From a tailnet-connected device, open `https://<TS_FQDN>`. (Host is a tailnet member; HTTPS live, 200 on `/admin/setup`.)
+- [x] Verify the certificate is valid and no port suffix is required. (Let's Encrypt cert, CN=affine.taila4cbae.ts.net, Tailscale-provisioned; port 443.)
 - [ ] Verify login, workspace creation, document editing, uploads, and synchronization.
 - [ ] Verify the endpoint is unavailable from a client disconnected from Tailscale.
 
