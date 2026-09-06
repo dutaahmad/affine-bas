@@ -99,20 +99,20 @@ If the selected provider does not honor `depends_on` conditions, stop and use a 
 - [x] Validate Caddy with `podman exec affine_bas_caddy caddy validate --config /etc/caddy/Caddyfile`. ("Valid configuration".)
 - [x] From a tailnet-connected device, open `https://<TS_FQDN>`. (Host is a tailnet member; HTTPS live, 200 on `/admin/setup`.)
 - [x] Verify the certificate is valid and no port suffix is required. (Let's Encrypt cert, CN=affine.taila4cbae.ts.net, Tailscale-provisioned; port 443.)
-- [ ] Verify login, workspace creation, document editing, uploads, and synchronization.
-- [ ] Verify the endpoint is unavailable from a client disconnected from Tailscale.
+- [x] Verify login, workspace creation, document editing, uploads, and synchronization. (Human-verified from tailnet device.)
+- [x] Verify the endpoint is unavailable from a client disconnected from Tailscale. (Human-verified unreachable.)
 
 ## HUMAN GATE 5: First Administrator
 
-- [ ] Human creates and stores the first AFFiNE administrator credentials.
-- [ ] Human confirms the application is usable before inviting other users.
+- [x] Human creates and stores the first AFFiNE administrator credentials. (Created via `/admin/setup`; email shows unconfirmed — SMTP not configured, optional for private use.)
+- [x] Human confirms the application is usable before inviting other users.
 
 ## Task 6: Documentation and Backup Handoff
 
-- [ ] Keep `README.md` aligned with the actual hostname, provider, data paths, and commands without adding secrets.
-- [ ] Document `podman compose up -d`, logs, status, and safe shutdown commands.
-- [ ] Document upgrade review and rollback precautions.
-- [ ] Document that backups are mandatory immediately after the first deployment.
+- [x] Keep `README.md` aligned with the actual hostname, provider, data paths, and commands without adding secrets. (Rewritten for `affine.taila4cbae.ts.net`, `bas-server`, Compose V2 provider warning, real paths and volume names.)
+- [x] Document `podman compose up -d`, logs, status, and safe shutdown commands. (Documented via the `$DC` Compose V2 form actually used.)
+- [x] Document upgrade review and rollback precautions.
+- [x] Document that backups are mandatory immediately after the first deployment.
 
 ## HUMAN GATE 6: Backup Readiness
 
