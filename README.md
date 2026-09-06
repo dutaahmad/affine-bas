@@ -110,6 +110,12 @@ encryption** (`gdrive-crypt:` remote → `gdrive:affine-backups`). The initial
 backup was taken on 2026-09-06 and restore-tested (dump restored into a
 disposable pgvector container: exit 0, 91 tables, 1 user, extensions intact).
 
+Backups run automatically: the `affine-backup.timer` systemd user unit runs
+`scripts/backup.sh` every Sunday at 03:00, keeps 90 days of local snapshots
+in `~/affine-backups/`, and keeps the newest 12 backup directories on Drive.
+Check status with `systemctl --user list-timers affine-backup.timer` and run a
+backup on demand with `systemctl --user start affine-backup.service`.
+
 A full backup consists of:
 
 - PostgreSQL dump: `podman exec affine_bas_postgres pg_dump -U affine affine`
