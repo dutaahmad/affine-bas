@@ -103,29 +103,48 @@ Do not upgrade by switching to an unreviewed `latest`/`stable` drift without
 backup. Rollback precaution: keep the previous image tag and a database backup
 taken immediately before upgrading.
 
-## MUST DO IMMEDIATELY: backups
+## Backups
 
-This deployment is not production-ready until backups are configured and a
-restore has been tested.
+Off-host storage is configured: **Google Drive via rclone with client-side
+encryption** (`gdrive-crypt:` remote → `gdrive:affine-backups`). The initial
+backup was taken on 2026-09-06 and restore-tested (dump restored into a
+disposable pgvector container: exit 0, 91 tables, 1 user, extensions intact).
 
-Back up all of the following outside the deployment directory:
+A full backup consists of:
 
-- PostgreSQL, using `pg_dump` from `affine_bas_postgres`:
-
-  ```bash
-  podman exec affine_bas_postgres pg_dump -U affine affine > affine-$(date +%F).sql
-  ```
-
-- `/home/bas-server/code/affine-bas/data/storage` (uploaded files).
+- PostgreSQL dump: `podman exec affine_bas_postgres pg_dump -U affine affine`
+- `/home/bas-server/code/affine-bas/data/storage` (uploaded files)
 - `/home/bas-server/code/affine-bas/config` (includes `config.json` and
-  `private.key`).
-- `compose.yml`, `.env` (stored securely and separately from Git), and the
-  effective `AFFINE_IMAGE` tag.
-- The Caddy Tailscale state volume `affine-bas_caddy_ts_state` if preserving
-  the registered node identity matters.
+  `private.key`)
+- `compose.yml`, `.env`, and the effective `AFFINE_IMAGE` tag
+- Caddy state volumes `affine-bas_caddy_ts_state` and `affine-bas_caddy_data`
+  (`podman volume export`)
 
-Use a separate disk, NAS, or encrypted off-host storage. A database-only
-backup does not restore uploaded files.
+Take and upload a new backup:
+
+```bash
+BK=~/affine-backups/$(date +%F)
+mkdir -p "$BK"
+cd /home/bas-server/code/affine-bas
+podman exec affine_bas_postgres pg_dump -U affine affine > "$BK/affine-db.sql"
+cp -a config data/storage compose.yml .env "$BK/"
+chmod 600 "$BK/env"
+podman volume export affine-bas_caddy_ts_state -o "$BK/caddy_ts_state.tar"
+podman volume export affine-bas_caddy_data -o "$BK/caddy_data.tar"
+cd "$BK" && sha256sum affine-db.sql env compose.yml caddy_*.tar > SHA256SUMS
+~/.local/bin/rclone copy "$BK" "gdrive-crypt:$(date +%F)"
+```
+
+Recovery notes:
+
+- The rclone crypt keys are in `~/affine-backups/rclone-crypt-recovery.txt`
+  and `~/.config/rclone/rclone.conf` (mode 600). **Store the two password
+  lines in a password manager** — without them the Drive backups are
+  unrecoverable.
+- rclone currently uses its shared Google client_id, which is being retired
+  during 2026; create a personal client_id and update the `gdrive` remote
+  before then (no re-upload needed).
+- A database-only backup does not restore uploaded files.
 
 ## Deferred: SMTP
 

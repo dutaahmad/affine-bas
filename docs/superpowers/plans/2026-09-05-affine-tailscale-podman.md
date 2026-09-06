@@ -116,8 +116,8 @@ If the selected provider does not honor `depends_on` conditions, stop and use a 
 
 ## HUMAN GATE 6: Backup Readiness
 
-- [ ] Human chooses separate-disk, NAS, or encrypted off-host backup storage. (Considering Google Drive via rclone.)
-- [x] Back up PostgreSQL, uploaded files, configuration, Compose files, and required Caddy state. (Initial backup at `/home/bas-server/affine-backups/2026-09-06-initial` with SHA256SUMS: pg dump, config, storage, compose.yml, .env, image tag, caddy volume exports.)
-- [x] Human performs a restore test and records the result. (2026-09-06: dump restored into disposable pgvector container — exit 0, 0 errors, 91 tables, 1 user, extensions plpgsql/pgcrypto/vector OK.)
+- [x] Human chooses separate-disk, NAS, or encrypted off-host backup storage. (Encrypted off-host: Google Drive via rclone `gdrive-crypt` remote, client-side encryption verified — raw Drive listing shows only ciphertext.)
+- [x] Back up PostgreSQL, uploaded files, configuration, Compose files, and required Caddy state. (Initial backup at `/home/bas-server/affine-backups/2026-09-06-initial`, uploaded to `gdrive-crypt:2026-09-06-initial`, 10 files verified.)
+- [x] Human performs a restore test and records the result. (2026-09-06: dump restored into disposable pgvector container — exit 0, 0 errors, 91 tables, 1 user, extensions plpgsql/pgcrypto/vector OK. Documented in README.)
 
 The deployment is not production-ready until this gate is complete.
