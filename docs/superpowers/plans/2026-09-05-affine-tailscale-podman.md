@@ -39,10 +39,10 @@
 
 ## HUMAN GATE 1: Tailscale Administration
 
-- [ ] Human enables MagicDNS and HTTPS certificates.
-- [ ] Human confirms `affine` is an unused hostname.
-- [ ] Human creates an allowed reusable or tagged auth key.
-- [ ] Human confirms ACL access for intended tailnet members.
+- [x] Human enables MagicDNS and HTTPS certificates.
+- [x] Human confirms `affine` is an unused hostname.
+- [x] Human creates an allowed reusable or tagged auth key.
+- [x] Human confirms ACL access for intended tailnet members. (Default allow-all ACLs.)
 
 Stop until the human confirms these prerequisites.
 
@@ -50,41 +50,41 @@ Stop until the human confirms these prerequisites.
 
 **Files:** Server filesystem outside Git
 
-- [ ] Human or operator creates the dedicated rootless `affine` user.
-- [ ] Create `/opt/affine` and grant ownership to `affine`.
+- [x] Human or operator creates the dedicated rootless `affine` user. (Superseded: human chose the existing rootless `bas-server` user.)
+- [x] Create `/opt/affine` and grant ownership to `affine`. (Superseded: deployment runs from `/home/bas-server/code/affine-bas` owned by `bas-server`.)
 - [x] Install Podman and one Compose provider. (Podman 4.9.3 present; provider selected: Compose V2 at `/usr/libexec/docker/cli-plugins/docker-compose` via the rootless `podman.socket`.)
 - [x] Validate rootless Podman and the provider's support for healthcheck dependency conditions. (Empirical test 2026-09-06: podman-compose 1.0.6 REJECTED — starts dependents before `service_completed_successfully` completes; Compose V2 v5.3.1 + `systemctl --user` podman socket PASSES both `service_healthy` and `service_completed_successfully`.)
-- [ ] Enable user lingering only if boot-time persistence is later required.
+- [x] Enable user lingering only if boot-time persistence is later required. (Linger already enabled for `bas-server`; `podman.socket` user service enabled and active.)
 
 ## HUMAN GATE 2: Server Access
 
-- [ ] Human confirms SSH or physical-console recovery access.
-- [ ] Human confirms `sudo` is available for initial setup.
-- [ ] Human approves proceeding with server-side directory and permission changes.
+- [x] Human confirms SSH or physical-console recovery access.
+- [x] Human confirms `sudo` is available for initial setup.
+- [x] Human approves proceeding with server-side directory and permission changes.
 
 ## Task 3: Server-Only Configuration
 
 **Files:** Server-only `/opt/affine/.env` and `/opt/affine/config/config.json`
 
-- [ ] Copy `.env.example` to `.env` and set `TS_FQDN`, `TS_AUTHKEY`, and the reviewed `AFFINE_IMAGE` tag.
-- [ ] Set `.env` permissions to `0600`.
-- [ ] Copy `config/config.json.example` to `config/config.json`.
-- [ ] Set `server.externalUrl` to exactly the same HTTPS URL as `TS_FQDN`.
+- [x] Copy `.env.example` to `.env` and set `TS_FQDN`, `TS_AUTHKEY`, and the reviewed `AFFINE_IMAGE` tag. (`affine.taila4cbae.ts.net`, stable image.)
+- [x] Set `.env` permissions to `0600`.
+- [x] Copy `config/config.json.example` to `config/config.json`.
+- [x] Set `server.externalUrl` to exactly the same HTTPS URL as `TS_FQDN`.
 
 ## HUMAN GATE 3: Secret and Hostname Review
 
-- [ ] Human verifies the auth key is not committed or exposed in shell history.
-- [ ] Human verifies the hostname matches in `.env` and `config.json`.
-- [ ] Human verifies the Tailscale hostname is not already registered.
+- [x] Human verifies the auth key is not committed or exposed in shell history. (Written via file tool; only `.env` contains the key; gitignored.)
+- [x] Human verifies the hostname matches in `.env` and `config.json`.
+- [x] Human verifies the Tailscale hostname is not already registered.
 
 ## Task 4: Compose Validation and Start
 
-- [ ] Run `podman compose config`.
-- [ ] Confirm the rendered configuration has no host port for AFFiNE.
-- [ ] Run `podman compose up -d`.
-- [ ] Run `podman compose ps`.
-- [ ] Inspect `podman compose logs --tail=200 affine affine_migration`.
-- [ ] Confirm the migration job completes and AFFiNE, PostgreSQL, Redis, and Caddy remain running.
+- [x] Run `podman compose config`. (Via Compose V2 `docker-compose` binary against the rootless `podman.socket`.)
+- [x] Confirm the rendered configuration has no host port for AFFiNE.
+- [x] Run `podman compose up -d`.
+- [x] Run `podman compose ps`.
+- [x] Inspect `podman compose logs --tail=200 affine affine_migration`.
+- [x] Confirm the migration job completes and AFFiNE, PostgreSQL, Redis, and Caddy remain running. (Migration exit 0, "Done 10 migrations"; all services running, 0 restarts.)
 
 If the selected provider does not honor `depends_on` conditions, stop and use a provider that does or document a deliberate staged start before continuing.
 
