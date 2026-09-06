@@ -29,13 +29,13 @@
 - Create: `.env.example`
 - Create: `.gitignore`
 
-- [ ] Verify the official AFFiNE service names, images, healthchecks, and migration dependency against the current release Compose reference.
-- [ ] Keep PostgreSQL, Redis, and AFFiNE data on bind mounts under `./data`.
-- [ ] Add the `affine-upstream` network alias to the AFFiNE service.
-- [ ] Configure Caddy with `bind tailscale/affine` and `reverse_proxy affine-upstream:3010`.
-- [ ] Add persistent `caddy_ts_state` and `caddy_data` volumes.
-- [ ] Make missing `TS_FQDN` and `TS_AUTHKEY` fail Compose interpolation instead of silently starting insecurely.
-- [ ] Ignore `.env`, `config/config.json`, `data/`, and backup files.
+- [x] Verify the official AFFiNE service names, images, healthchecks, and migration dependency against the current release Compose reference. (Verified against `.docker/selfhost/compose.yml` on `canary`; added missing `DEPLOYMENT_TYPE=selfhosted` and `copilot.byok.allowCustomEndpoint`.)
+- [x] Keep PostgreSQL, Redis, and AFFiNE data on bind mounts under `./data`.
+- [x] Add the `affine-upstream` network alias to the AFFiNE service.
+- [x] Configure Caddy with `bind tailscale/affine` and `reverse_proxy affine-upstream:3010`.
+- [x] Add persistent `caddy_ts_state` and `caddy_data` volumes.
+- [x] Make missing `TS_FQDN` and `TS_AUTHKEY` fail Compose interpolation instead of silently starting insecurely. (Verified: config fails with exit 1 when unset.)
+- [x] Ignore `.env`, `config/config.json`, `data/`, and backup files.
 
 ## HUMAN GATE 1: Tailscale Administration
 
@@ -52,8 +52,8 @@ Stop until the human confirms these prerequisites.
 
 - [ ] Human or operator creates the dedicated rootless `affine` user.
 - [ ] Create `/opt/affine` and grant ownership to `affine`.
-- [ ] Install Podman and one Compose provider.
-- [ ] Validate rootless Podman and the provider's support for healthcheck dependency conditions.
+- [x] Install Podman and one Compose provider. (Podman 4.9.3 present; provider selected: Compose V2 at `/usr/libexec/docker/cli-plugins/docker-compose` via the rootless `podman.socket`.)
+- [x] Validate rootless Podman and the provider's support for healthcheck dependency conditions. (Empirical test 2026-09-06: podman-compose 1.0.6 REJECTED — starts dependents before `service_completed_successfully` completes; Compose V2 v5.3.1 + `systemctl --user` podman socket PASSES both `service_healthy` and `service_completed_successfully`.)
 - [ ] Enable user lingering only if boot-time persistence is later required.
 
 ## HUMAN GATE 2: Server Access

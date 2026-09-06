@@ -7,7 +7,8 @@
   "copilot": {
     "enabled": true,
     "byok": {
-      "enabled": true
+      "enabled": true,
+      "allowCustomEndpoint": true
     }
   }
 }
